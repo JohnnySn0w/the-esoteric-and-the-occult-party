@@ -1,16 +1,25 @@
 # The Esoteric and the Occult Party — NFC experiments
 
-NFC experiences that work with built-in phone features, without a third-party app.
+NFC experiences with **Android/iPhone parity and zero visitor setup**, using built-in phone features.
 Target OS releases from the preceding four years (cutoff at project setup: September 26, 2022).
 Hardware: NTAG215 stickers and a Flipper Zero, connected to Windows over BLE.
 
+## Visitor requirements
+
+Every experience must provide the same intended function on both Android and iOS without app
+installation, shortcuts or automations, accounts/sign-in, pairing, profiles, or settings changes.
+Personal iPhone automations are out of scope. These requirements apply to linked websites too.
+Scanning and normal system confirmations, such as Open or Join, are ordinary use; configuring a
+phone beforehand is setup. If configuration is necessary, that phone/experience combination
+fails our compatibility requirements. Authoring tools on this laptop and the Flipper are separate
+from the visitor experience.
+
 ## What we will deploy
 
-| Experience | Approach | Guest setup |
+| Experience | Approach | Visitor interaction |
 | --- | --- | --- |
-| Website, clue, party info, playlist, map | One standard NDEF HTTPS URI | Scan, then follow the phone's prompt; app links should have a web fallback |
+| Website, clue, party info, playlist, map | One standard NDEF HTTPS URI | Scan and open; the full intended function must work without an app or sign-in on both platforms |
 | Guest Wi-Fi | Printed Wi-Fi QR code | Built-in camera/Wi-Fi scanner; NFC Wi-Fi records are not a shared iPhone/Android solution |
-| Personal iPhone automation | Built-in Shortcuts NFC trigger | Each person must set up their own automation; not a public tap-and-run experience |
 
 An NFC URL does not silently join Wi-Fi, install software, or grant additional permissions.
 NFC launches the browser; a linked website can provide interactive clues or other experiences.
@@ -60,8 +69,8 @@ Local captures and private URLs belong in ignored `artifacts/` or `.local/` dire
 2. Inspect its contents and confirm the destination.
 3. Use the available NTAG write action and place one blank NTAG215 at the Flipper's NFC antenna.
 4. Read the sticker back and compare its NDEF payload. Its UID will differ from the generated image.
-5. Test a real iPhone and Android phone using built-in scanning, with no NFC reader app open.
-6. Record phone models, OS versions, prompts, and actual destination behavior before deploying.
+5. Test a real iPhone and Android phone using built-in scanning, without installing apps or configuring either phone for the experience.
+6. Verify that both provide the same intended function, including linked content, without sign-in or other setup. Record phone models, OS versions, prompts, and any compatibility failures before deploying.
 
 Official Flipper documentation requires matching NTAG types, default PWD/PACK, disabled AUTH0,
 and zero static/dynamic lock bits. Leave test stickers rewritable. Physical writing and phone
