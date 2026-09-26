@@ -24,7 +24,16 @@ from the visitor experience.
 An NFC URL does not silently join Wi-Fi, install software, or grant additional permissions.
 NFC launches the browser; a linked website can provide interactive clues or other experiences.
 Use a stable URL under our control when available, so content can change without rewriting tags.
-No destination URL has been chosen yet. The included example opens **https://example.com/**.
+The included basic example opens **https://example.com/**; the circle generates a separate
+link for each of its six seals.
+
+## The Sixfold Circle
+
+[Projector experience and development guide](magic-circle/README.md): six NFC links awaken
+six sectors of one shared golden circle. A server stores the shared progress, so phones and
+the projector do not need to share a network. Visitors only scan and open the link. Internet
+access is required. Host controls provide the sticker URLs, a projector view, and a reset that
+keeps the same stickers usable.
 
 ## Tools
 
