@@ -3,8 +3,8 @@ import "./globals.css";
 import { WebMcp } from "./webmcp";
 
 export const metadata: Metadata = {
-  title: "The Sixfold Circle",
-  description: "Six seals awaken one shared magic circle.",
+  title: "The Goetic Circle",
+  description: "Reveal the historical Goetic Circle of Solomon together.",
   robots: { index: false, follow: false },
   referrer: "no-referrer",
   icons: {

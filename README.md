@@ -27,10 +27,11 @@ Use a stable URL under our control when available, so content can change without
 The included basic example opens **https://example.com/**; the circle generates a separate
 link for each of its six seals.
 
-## The Sixfold Circle
+## The Goetic Circle
 
 [Projector experience and development guide](magic-circle/README.md): six NFC links awaken
-six sectors of one shared golden circle. A server stores the shared progress, so phones and
+six sectors of the sourced Goetic Circle of Solomon, starting from a plain outline.
+A server stores the shared progress, so phones and
 the projector do not need to share a network. Visitors only scan and open the link. Internet
 access is required. Host controls provide the sticker URLs, a projector view, and a reset that
 keeps the same stickers usable.

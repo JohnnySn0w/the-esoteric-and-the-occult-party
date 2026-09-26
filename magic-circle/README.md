@@ -1,8 +1,27 @@
-# The Sixfold Circle
+# The Goetic Circle
 
 Six NTAG215 stickers open six HTTPS links. Each link automatically awakens one
-section of a shared golden magic circle. The center lights when all six are awake.
-The imagery is decorative, with Air, Sun, Venus, Earth, Jupiter and Saturn seals.
+section of the Goetic Circle of Solomon. Initially only one plain circular outline
+is visible. Six numbered regions reveal the historical diagram, including its center.
+The six-region interaction is a modern display mechanism, not a historical system
+of six seals or planetary correspondences.
+
+## Artwork source
+
+The app displays the actual **Figure 153, Magical Circle of King Solomon** from the
+Mathers/Crowley *Goetia*, as reproduced in L. W. de Laurence's *The Lesser Key of
+Solomon: Goetia, The Book of Evil Spirits*. The source scan is public domain:
+
+- [Wikimedia Commons file and provenance](https://commons.wikimedia.org/wiki/File:Goetic_circle_from_The_Lesser_Key_of_Solomon.jpg)
+- [Scanned volume at Internet Archive](https://archive.org/details/lesserkeyofsolom00dela/page/n5/mode/2up)
+
+`public/goetia-source.jpg` is the unchanged 1728 × 2324 source image. The SVG viewport
+omits the external triangle, its lower name and the figure caption. It retains the
+circle's original names, four internal hexagrams, central square, directions and
+four external candle pentagrams. A display filter makes the original printed ink
+gold on black; the original lettering and drawing are not regenerated or transcribed.
+This is a monochrome projection adaptation, not a reproduction of the text's color
+prescriptions. It is the Goetic circle, not an Abramelin diagram.
 
 ## Run a gathering
 
@@ -27,15 +46,18 @@ desktop browser testing does not establish physical phone compatibility.
 ## Data and implementation
 
 - React/Vinext frontend and a Cloudflare D1 shared database through Sites.
-- URL query: `?circle=<id>&seal=air&key=<seal-key>`.
+- URL query: `?circle=<id>&seal=section-1&key=<seal-key>` (through `section-6`).
+- Earlier prototype links and stored keys still resolve to the corresponding
+  numbered sections; no database migration or sticker rewrite is required.
 - Projector query: `?circle=<id>&view=projector`.
 - Host credential lives in the URL fragment and host browser local storage.
   Only its SHA-256 hash is stored server-side. No visitor storage is required.
 - Public state includes only circle ID, six-bit mask, revision and last seal.
 - Atomic bitwise updates preserve simultaneous scans. Reset requires the host
   credential; seal keys cannot reset the circle or read other sticker keys.
-- Generated engraved circle artwork is `public/circle.png`; six SVG clipping
-  sectors reveal that image. Reduced-motion preferences disable animation.
+- Six SVG clipping sectors reveal the source plate. Unrevealed sectors have zero
+  opacity, so no lettering or symbols show through the initial outline.
+  Reduced-motion preferences disable animation.
 - Optional read-only WebMCP `get_circle_progress` returns the same public state.
 - Runtime event URLs, host credentials and generated NFC files belong in the
   parent repository's ignored `artifacts/` directory, never committed source.

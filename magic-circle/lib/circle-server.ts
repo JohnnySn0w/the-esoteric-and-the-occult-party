@@ -4,7 +4,7 @@ import { SEALS, type CircleState } from "./circle";
 type Row = { id: string; host_hash: string; seal_keys: string; mask: number; revision: number; last_seal: string | null };
 class HttpError extends Error { constructor(public status: number, message: string) { super(message); } }
 function db() { if (!env.DB) throw new Error("Circle database unavailable"); return env.DB; }
-const visible = (row: Pick<Row, "id" | "mask" | "revision" | "last_seal">): CircleState => ({ id: row.id, mask: row.mask, revision: row.revision, lastSeal: row.last_seal });
+const visible = (row: Pick<Row, "id" | "mask" | "revision" | "last_seal">): CircleState => ({ id: row.id, mask: row.mask, revision: row.revision, lastSeal: SEALS.find(s => s.id === row.last_seal || s.legacyId === row.last_seal)?.id ?? null });
 const token = (bytes: number) => Array.from(crypto.getRandomValues(new Uint8Array(bytes)), n => n.toString(16).padStart(2, "0")).join("");
 async function hash(value: string) { return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value))), n => n.toString(16).padStart(2, "0")).join(""); }
 async function row(id: string) {
@@ -39,7 +39,7 @@ export async function read(id: string) { return visible(await row(id)); }
 export async function host(request: Request, id: string) {
   const circle = await row(id); await authorize(request, circle);
   const keys = JSON.parse(circle.seal_keys) as Record<string, string>;
-  return { ...visible(circle), links: SEALS.map(s => ({ seal: s.id, key: keys[s.id] })) };
+  return { ...visible(circle), links: SEALS.map(s => ({ seal: s.id, key: keys[s.id] ?? keys[s.legacyId] })) };
 }
 export async function unlock(request: Request, id: string) {
   checkOrigin(request);
@@ -48,17 +48,18 @@ export async function unlock(request: Request, id: string) {
   let body: { seal?: unknown; key?: unknown };
   try { body = JSON.parse(text); } catch { throw new HttpError(400, "This seal link is invalid."); }
   if (!body || typeof body !== "object" || typeof body.seal !== "string" || typeof body.key !== "string") throw new HttpError(400, "This seal link is invalid.");
-  const index = SEALS.findIndex(s => s.id === body.seal);
+  const index = SEALS.findIndex(s => s.id === body.seal || s.legacyId === body.seal);
   if (index < 0) throw new HttpError(400, "This seal is not part of the circle.");
   const circle = await row(id), keys = JSON.parse(circle.seal_keys) as Record<string, string>;
-  if (keys[body.seal] !== body.key) throw new HttpError(403, "This seal link is incomplete or invalid.");
+  const section = SEALS[index];
+  if ((keys[section.id] ?? keys[section.legacyId]) !== body.key) throw new HttpError(403, "This seal link is incomplete or invalid.");
   const bit = 1 << index;
   // Atomic bitwise OR preserves concurrent scans. Duplicate scans don't advance revision.
   const updated = await db().prepare(`UPDATE circles SET
     revision = revision + CASE WHEN (mask & ?) = 0 THEN 1 ELSE 0 END,
     last_seal = CASE WHEN (mask & ?) = 0 THEN ? ELSE last_seal END,
     mask = mask | ? WHERE id = ? RETURNING id, mask, revision, last_seal`)
-    .bind(bit, bit, body.seal, bit, id).first<Row>();
+    .bind(bit, bit, section.id, bit, id).first<Row>();
   if (!updated) throw new HttpError(404, "This circle could not be found.");
   return visible(updated);
 }

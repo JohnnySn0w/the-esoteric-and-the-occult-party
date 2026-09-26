@@ -16,6 +16,7 @@ async function request(path, { status = 200, host, body, method = 'GET', request
 const circle = await request('/api/circles', { method: 'POST', body: {} });
 const path = `/api/circles/${circle.id}`;
 assert.equal(circle.links.length, 6);
+assert.deepEqual(circle.links.map(link => link.seal), Array.from({ length: 6 }, (_, i) => `section-${i + 1}`));
 assert.match(circle.host, /^[a-f0-9]{64}$/);
 const initial = await request(path);
 assert.deepEqual(Object.keys(initial).sort(), ['id', 'lastSeal', 'mask', 'revision']);
@@ -42,5 +43,9 @@ assert.deepEqual((await request(`${path}/host`, { host: circle.host })).links, c
 const reused = await request(`${path}/unlock`, { method: 'POST', body: circle.links[0] });
 assert.equal(reused.mask, 1);
 assert.equal(reused.revision, 8);
+const legacyAlias = await request(`${path}/unlock`, { method: 'POST', body: { ...circle.links[0], seal: 'air' } });
+assert.equal(legacyAlias.mask, 1);
+assert.equal(legacyAlias.revision, 8);
+assert.equal(legacyAlias.lastSeal, 'section-1');
 assert.equal((await request(`/api/circles/${other.id}`)).mask, 0);
 console.log('PASS: public state, host authorization, invalid links, origin check, concurrent scans, duplicate scans, reset, sticker reuse, room isolation.');
