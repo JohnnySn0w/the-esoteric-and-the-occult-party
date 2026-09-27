@@ -1,16 +1,26 @@
 """Generate a rewritable NTAG215 Flipper file containing one HTTPS NDEF URI."""
 import argparse
+from ipaddress import ip_address, ip_network
 from pathlib import Path
 from urllib.parse import urlsplit
 
 
-def uri_tlv(url):
+def uri_tlv(url, *, allow_lan_http=False):
     parsed = urlsplit(url)
-    if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+    lan_http = False
+    if allow_lan_http and parsed.scheme == "http" and parsed.hostname:
+        try:
+            address = ip_address(parsed.hostname)
+            lan_http = any(address in ip_network(network) for network in
+                           ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"))
+        except ValueError:
+            pass
+    if (parsed.scheme != "https" and not lan_http) or not parsed.hostname or parsed.username or parsed.password:
         raise ValueError("Use an absolute HTTPS URL without embedded credentials")
     if any(ord(c) < 33 or ord(c) > 126 for c in url):
         raise ValueError("Use an ASCII URL with spaces/unicode percent-encoded")
-    payload = b"\x04" + url[len("https://"):].encode("ascii")
+    prefix = b"\x03" if lan_http else b"\x04"
+    payload = prefix + url[len(parsed.scheme) + 3:].encode("ascii")
     if len(payload) <= 255:
         record = b"\xd1\x01" + bytes([len(payload)]) + b"U" + payload
     else:
@@ -22,8 +32,8 @@ def uri_tlv(url):
     return tlv
 
 
-def make_dump(url):
-    tlv = uri_tlv(url)
+def make_dump(url, *, allow_lan_http=False):
+    tlv = uri_tlv(url, allow_lan_http=allow_lan_http)
     memory = bytearray(540)
     # Synthetic identifier for this generated image; physical tag UIDs stay unchanged.
     uid = bytes.fromhex("04 50 41 53 54 59 80")
@@ -53,15 +63,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("url")
     parser.add_argument("output", type=Path)
+    parser.add_argument("--allow-lan-http", action="store_true",
+                        help="Local testing only: allow HTTP to an RFC1918 IPv4 address")
     args = parser.parse_args()
     try:
-        dump = make_dump(args.url)
+        dump = make_dump(args.url, allow_lan_http=args.allow_lan_http)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         with args.output.open("x", encoding="ascii", newline="\n") as output:
             output.write(dump)
     except (ValueError, OSError) as error:
         parser.exit(1, f"Error: {error}\n")
-    print(f"Created {args.output}: {len(uri_tlv(args.url))}/496 NDEF area bytes")
+    print(f"Created {args.output}: {len(uri_tlv(args.url, allow_lan_http=args.allow_lan_http))}/496 NDEF area bytes")
 
 
 if __name__ == "__main__":

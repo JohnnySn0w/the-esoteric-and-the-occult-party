@@ -75,6 +75,13 @@ Local captures and private URLs belong in ignored `artifacts/` or `.local/` dire
 
 ### Write a physical sticker
 
+For a same-LAN development test, the encoder accepts `--allow-lan-http` with an
+HTTP URL whose host is an RFC1918 IPv4 address. HTTPS remains the default; public
+HTTP URLs and hostnames are rejected. Run the site with `--hostname 0.0.0.0`, use
+the laptop's LAN address in the sticker URL, and keep the server running while
+testing. This test link stops working if the laptop's address changes. Keep its
+generated file and session credentials in ignored `artifacts/`.
+
 1. Open NFC → Saved → occult-party and select the intended file.
 2. Inspect its contents and confirm the destination.
 3. Use the available NTAG write action and place one blank NTAG215 at the Flipper's NFC antenna.

@@ -32,6 +32,18 @@ class NdefTests(unittest.TestCase):
         self.assertEqual(pages[134][:2], b"\x00\x00")
         self.assertEqual(pages[3], bytes.fromhex("E1 10 3E 00"))
 
+    def test_lan_http_requires_explicit_opt_in(self):
+        url = "http://10.1.2.3:5173/?circle=test"
+        with self.assertRaises(ValueError):
+            uri_tlv(url)
+        tlv = uri_tlv(url, allow_lan_http=True)
+        self.assertEqual(tlv[5:7], b"U\x03")
+        self.assertEqual(tlv[7:-1].decode(), url.removeprefix("http://"))
+        for url in ["http://example.com", "http://8.8.8.8", "http://127.0.0.1",
+                    "http://10.1.2.3@example.com", "http://u:p@10.1.2.3"]:
+            with self.subTest(url=url), self.assertRaises(ValueError):
+                uri_tlv(url, allow_lan_http=True)
+
 
 class FramingTests(unittest.TestCase):
     def test_fragmented_and_coalesced_notifications(self):
