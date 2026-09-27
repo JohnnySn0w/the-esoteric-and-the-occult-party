@@ -4,7 +4,7 @@ import { SEALS, type CircleState } from "./circle";
 type Row = { id: string; host_hash: string; seal_keys: string; mask: number; revision: number; last_seal: string | null };
 class HttpError extends Error { constructor(public status: number, message: string) { super(message); } }
 function db() { if (!env.DB) throw new Error("Circle database unavailable"); return env.DB; }
-const visible = (row: Pick<Row, "id" | "mask" | "revision" | "last_seal">): CircleState => ({ id: row.id, mask: row.mask, revision: row.revision, lastSeal: SEALS.find(s => s.id === row.last_seal || s.legacyId === row.last_seal)?.id ?? null });
+const visible = (row: Pick<Row, "id" | "mask" | "revision" | "last_seal">): CircleState => ({ id: row.id, mask: row.mask & 31, revision: row.revision, lastSeal: SEALS.find(s => s.id === row.last_seal || s.legacyId === row.last_seal)?.id ?? null });
 const token = (bytes: number) => Array.from(crypto.getRandomValues(new Uint8Array(bytes)), n => n.toString(16).padStart(2, "0")).join("");
 async function hash(value: string) { return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value))), n => n.toString(16).padStart(2, "0")).join(""); }
 async function row(id: string) {

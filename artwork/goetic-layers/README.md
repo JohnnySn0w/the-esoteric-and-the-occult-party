@@ -22,6 +22,6 @@ triangle are not part of these isolated layers. The mist is a new display effect
 Source: [Goetic Circle of Solomon plate on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Goetic_circle_from_The_Lesser_Key_of_Solomon.jpg), public domain.
 
 Regenerate SVG assets with `python tools/make_goetic_layers.py` from the repository
-root. The script does not modify the source image or change saved circles. The
-study is separate from the live six-section NFC implementation, for review before
-connecting the new five-action sequence.
+root. The script also copies these exact assets into the live site's public
+directory. It does not modify the source image or change saved circles. The live
+site uses the five action layers in this order, above the starting outline.

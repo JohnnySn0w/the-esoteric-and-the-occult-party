@@ -1,10 +1,9 @@
 # The Goetic Circle
 
-Six NTAG215 stickers open six HTTPS links. Each link automatically awakens one
-section of the Goetic Circle of Solomon. Initially only one plain circular outline
-is visible. Six numbered regions reveal the historical diagram, including its center.
-The six-region interaction is a modern display mechanism, not a historical system
-of six seals or planetary correspondences.
+Five NTAG215 stickers activate five independent layers: snake, exterior stars,
+interior stars, central square, and golden mist/sparkles. Initially only one plain
+circle is visible. Use the mist sticker last for the finale; activation order is
+not enforced. Reset hides all five layers while keeping the outline.
 
 ## Artwork source
 
@@ -17,8 +16,8 @@ Solomon: Goetia, The Book of Evil Spirits*. The source scan is public domain:
 
 `public/goetia-source.jpg` is the unchanged 1728 × 2324 source image. The SVG viewport
 omits the external triangle, its lower name and the figure caption. It retains the
-circle's original names, four internal hexagrams, central square, directions and
-four external candle pentagrams. A display filter makes the original printed ink
+circle's original names, four internal hexagrams, central square and
+four external candle pentagrams. Direction labels are omitted. A display filter makes the original printed ink
 gold on black; the original lettering and drawing are not regenerated or transcribed.
 This is a monochrome projection adaptation, not a reproduction of the text's color
 prescriptions. It is the Goetic circle, not an Abramelin diagram.
@@ -28,7 +27,7 @@ prescriptions. It is the Goetic circle, not an Abramelin diagram.
 1. Open the site and choose **Prepare a circle**. Save the private host URL.
 2. Open **Host controls → Open projector**, move that window to the projector,
    and choose **Fullscreen**. The projector link has no reset permission.
-3. Encode each of the six **sticker URLs** as an NDEF HTTPS URI on an NTAG215.
+3. Encode each of the five **sticker URLs** as an NDEF HTTPS URI on an NTAG215.
    Use this repository's `tools/make_ntag215.py` and `tools/flipper_ble.py`.
 4. Guests scan and accept the phone's normal Open prompt. The opened page awakens
    that seal automatically. No account, app, shortcut or phone setup is needed.
@@ -46,17 +45,19 @@ desktop browser testing does not establish physical phone compatibility.
 ## Data and implementation
 
 - React/Vinext frontend and a Cloudflare D1 shared database through Sites.
-- URL query: `?circle=<id>&seal=section-1&key=<seal-key>` (through `section-6`).
-- Earlier prototype links and stored keys still resolve to the corresponding
-  numbered sections; no database migration or sticker rewrite is required.
+- URL query: `?circle=<id>&seal=section-1&key=<seal-key>` (through `section-5`).
+- The first five prototype links and stored keys retain their IDs, now mapped
+  to the five layers in order. Existing Section One stickers reveal the snake.
+  The old sixth action is retired; its bit is omitted from public state.
 - Projector query: `?circle=<id>&view=projector`.
 - Host credential lives in the URL fragment and host browser local storage.
   Only its SHA-256 hash is stored server-side. No visitor storage is required.
-- Public state includes only circle ID, six-bit mask, revision and last seal.
+- Public state includes only circle ID, five-bit mask, revision and last seal.
 - Atomic bitwise updates preserve simultaneous scans. Reset requires the host
   credential; seal keys cannot reset the circle or read other sticker keys.
-- Six SVG clipping sectors reveal the source plate. Unrevealed sectors have zero
-  opacity, so no lettering or symbols show through the initial outline.
+- The approved standalone SVG layers in `public/goetic-layers/` are stacked
+  over the outline. Unrevealed layers have zero opacity. The fifth SVG contains
+  animated mist and sparkles, independent of the four historical art layers.
   Reduced-motion preferences disable animation.
 - Optional read-only WebMCP `get_circle_progress` returns the same public state.
 - Runtime event URLs, host credentials and generated NFC files belong in the

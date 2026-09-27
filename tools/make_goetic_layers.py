@@ -70,7 +70,11 @@ def main():
     effect = '<g class="breath"><circle cx="496" cy="501" r="496" fill="url(#haze)"/><g fill="none" stroke="#e2b654" stroke-width="16" filter="url(#mist)"><ellipse cx="496" cy="501" rx="444" ry="425" opacity=".22"/><ellipse cx="496" cy="501" rx="407" ry="446" opacity=".17"/></g></g>'
     effect += '<g>' + ''.join(particles) + '</g>'
     (OUTPUT / "05-golden-mist.svg").write_text(svg(effect, effect_defs, "Animated golden mist and sparkles"), encoding="utf-8")
-    print(f"Created six transparent SVG layers in {OUTPUT}")
+    public = ROOT / "magic-circle" / "public" / "goetic-layers"
+    public.mkdir(parents=True, exist_ok=True)
+    for asset in OUTPUT.glob("*.svg"):
+        (public / asset.name).write_bytes(asset.read_bytes())
+    print(f"Created six transparent SVG layers in {OUTPUT} and {public}")
 
 
 if __name__ == "__main__":

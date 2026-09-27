@@ -20,9 +20,9 @@ button,a,input { -webkit-tap-highlight-color:transparent; } button { cursor:poin
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important;transition:none!important; }.reveal-halo{display:none} }
 .circle-art { mix-blend-mode:screen; }
 .starting-outline { stroke:#d7c38f;stroke-width:1.5;opacity:.7; }
-.complete .starting-outline { opacity:0; }
-.circle-art.complete { filter:none; }
-.circle-art.complete::after { content:"";position:absolute;inset:4%;border-radius:50%;box-shadow:0 0 32px 4px #e9c36f22;pointer-events:none; }
+
+
+
 .projection .stage { min-height:0; }
 .projection .circle-art { width:min(calc(100svh - 210px),94vw); }
 .fullscreen.projection .circle-art { width:min(calc(100svh - 186px),94vw); }
