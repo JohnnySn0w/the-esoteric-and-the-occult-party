@@ -25,16 +25,31 @@ An NFC URL does not silently join Wi-Fi, install software, or grant additional p
 NFC launches the browser; a linked website can provide interactive clues or other experiences.
 Use a stable URL under our control when available, so content can change without rewriting tags.
 The included basic example opens **https://example.com/**; the circle generates a separate
-link for each of its six seals.
+link for each of its five layers.
 
 ## The Goetic Circle
 
-[Projector experience and development guide](magic-circle/README.md): six NFC links awaken
-six sectors of the sourced Goetic Circle of Solomon, starting from a plain outline.
-A server stores the shared progress, so phones and
-the projector do not need to share a network. Visitors only scan and open the link. Internet
-access is required. Host controls provide the sticker URLs, a projector view, and a reset that
-keeps the same stickers usable.
+[Projector experience and development guide](magic-circle/README.md): five NFC links reveal
+the snake, exterior stars, interior stars, central square, and golden mist/sparkles,
+starting from a plain outline. Each layer activates independently; use the mist last
+for the finale. Host controls provide sticker URLs, a projector view, and a reset
+that keeps the same stickers usable.
+
+All devices must reach the shared server. The tested development setup uses the
+laptop on the same LAN as the phone. Public hosting would allow different networks.
+
+### Status — October 7, 2026
+
+- The five-layer implementation and artwork are committed upstream. The existing
+  Section One test card now activates the snake without rewriting the card.
+- The user confirmed writing the test URL to a physical card and opening it on an
+  iPhone, which activated Section One on the shared projector. This happened before
+  the switch from wedge reveals to the five artwork layers.
+- Exact phone model and iOS version, an Android test, and physical-tag readback
+  verification remain unrecorded. Cross-platform compatibility is not yet established.
+- The intended public destination is `voided.work`. GitHub Pages was discussed,
+  but no Pages deployment or frontend/backend split has been implemented. Public
+  hosting is not live; see the [hosting handoff](magic-circle/README.md#publishing).
 
 ## Tools
 
@@ -90,8 +105,8 @@ generated file and session credentials in ignored `artifacts/`.
 6. Verify that both provide the same intended function, including linked content, without sign-in or other setup. Record phone models, OS versions, prompts, and any compatibility failures before deploying.
 
 Official Flipper documentation requires matching NTAG types, default PWD/PACK, disabled AUTH0,
-and zero static/dynamic lock bits. Leave test stickers rewritable. Physical writing and phone
-behavior remain unverified until a sticker is present and the phones are tested.
+and zero static/dynamic lock bits. Leave test stickers rewritable. A successful upload
+verifies the Flipper file only; record physical writing and phone behavior separately.
 
 ## Verification
 
@@ -112,6 +127,19 @@ On September 26, 2026:
 - The user reported that the sample worked on their phone. Phone model, OS version, and whether
   the test used Flipper emulation or a physical sticker have not yet been recorded. Testing on
   both platforms and verification of a physical sticker remain pending.
+
+Subsequent verification on September 27, 2026:
+
+- Uploaded the LAN circle test file over BLE and verified its bytes by reading it back.
+- The user reported a successful physical-card write and iPhone activation of the
+  shared circle. This is distinct from the earlier sample's unspecified test method.
+- Seven Python tests passed, including explicit LAN-only HTTP encoding.
+- After connecting the five artwork layers, TypeScript, ESLint, the production build,
+  and API integration checks passed. Checks covered individual layers, concurrent and
+  duplicate scans, authorization, invalid links, reset/reuse, and room isolation.
+- Browser inspection confirmed the existing session's snake, the complete five-layer
+  circle with golden mist, and reset to the outline. These are desktop checks, not
+  additional physical-phone compatibility tests.
 
 ## References
 

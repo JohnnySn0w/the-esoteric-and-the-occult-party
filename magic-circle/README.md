@@ -5,6 +5,17 @@ interior stars, central square, and golden mist/sparkles. Initially only one pla
 circle is visible. Use the mist sticker last for the finale; activation order is
 not enforced. Reset hides all five layers while keeping the outline.
 
+| Sticker ID | Reveals |
+| --- | --- |
+| `section-1` | Snake and writing on its coils |
+| `section-2` | Four exterior candle pentagrams |
+| `section-3` | Four interior hexagrams and their lettering |
+| `section-4` | Central square and crosses |
+| `section-5` | Animated golden mist and sparkles |
+
+The approved artwork is also available in the [standalone layer gallery](../artwork/goetic-layers/index.html).
+Regenerate both gallery and live-site SVG assets with `python tools/make_goetic_layers.py`.
+
 ## Artwork source
 
 The app displays the actual **Figure 153, Magical Circle of King Solomon** from the
@@ -33,8 +44,9 @@ prescriptions. It is the Goetic circle, not an Abramelin diagram.
    that seal automatically. No account, app, shortcut or phone setup is needed.
 5. Use **Reset circle** in the host controls to start again with the same stickers.
 
-Every device needs internet access; they can use different networks. The active
-projector checks for changes about once per second, then fades in the seal.
+Every device needs access to the shared server. With public hosting they can use
+different networks; the current LAN test requires access to the laptop. The active
+projector checks for changes about once per second, then fades in the layer.
 Repeated openings are idempotent. Links remain reusable after reset. Anyone with
 a sticker link can activate that seal remotely; this is a party effect, not proof
 that someone is physically present. Keep the host URL private.
@@ -91,12 +103,31 @@ and absence of credentials in public state. It creates local test circles only.
 
 ## Publishing
 
-This directory is the source in the user's GitHub repository. The Sites project
-ID is preserved in `.openai/hosting.json`. Publish an exact source copy from the
-ignored `artifacts/site-checkout/` directory using the Sites workflow; keep its
-independent source checkout out of this repository's tracked tree. Use public
-visitor access so opening a sticker requires no sign-in. Never copy `.env*`, local
-database/runtime state, event links or credentials into the publication checkout.
+Status as of October 7, 2026: the app has been tested locally, but no public
+deployment has been completed. The intended destination is `voided.work`.
+Whether that domain already uses GitHub Pages has not been confirmed.
 
-Repeat checks after functional changes. Native deployment status must report
-success before new sticker files are generated against that deployment's URL.
+GitHub Pages was discussed as a frontend host. It serves static HTML, CSS and
+JavaScript ([GitHub documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages)).
+The current app also needs server-side routes and a D1 database for shared
+activations, host authorization, and reset, so it cannot be deployed unchanged
+to Pages. No hosting architecture change has been implemented.
+
+Remaining deployment work:
+
+1. Confirm the existing `voided.work` hosting and choose a URL path or subdomain.
+2. Choose hosting for the API and database. If using Pages for the frontend,
+   produce a static build and configure its API URL, allowed origins, and
+   cross-origin requests while retaining host authorization and origin checks.
+3. Provision the database and apply migrations, then deploy and test the public
+   HTTPS experience on an iPhone and Android phone without visitor setup.
+4. Create production circle sessions and encode their public sticker URLs.
+   Existing LAN cards point at a local address and will need rewriting for that URL.
+
+The earlier Sites registration remains in `.openai/hosting.json`; it is not proof
+of a live deployment. The project retains its original Sites/Vinext configuration.
+If Sites is chosen again, use its supported publishing workflow.
+
+Keep `.env*`, local database/runtime state, device captures, event links, host
+credentials, and generated test NFC files in ignored local storage. They are not
+part of the upstream source. Verify the deployed URL before producing party tags.
